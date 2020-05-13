@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!--
+    Práctica 1 - NIVEL 3
+    Inteligencia Artificial (IA) - DECSAI UGR
+    =========================================
+    
+    Alumno: Miguel Ángel Fernández Gutiérrez
+    3º Doble Grado en Ingeniería Informática y Matemáticas, 2019/20
+-->
+
+<!-- - - - - - -->
+
+<!--
+    ========================================
+    UTILIDADES PROPIAS
+    ========================================
+-->
+
+<category>
+    <pattern>FREE DAYS IN WEEK FROM *</pattern>
+    <template>
+        <think>
+            <set var="dia"><star/></set>
+            <set var="i">0</set>
+        </think>
+        <condition var="i">
+            <li value="5"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS DAY FULL <srai>TO DATE <get var="dia"/></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <get var="dia"/> </li></condition><think>
+                <set var="dia"><srai>TOMORROWDATE <get var="dia"/></srai></set>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>FREE DAYS MORNING IN WEEK FROM *</pattern>
+    <template>
+        <think>
+            <set var="dia"><star/></set>
+            <set var="i">0</set>
+        </think>
+        <condition var="i">
+            <li value="5"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS MORNING FULL <srai>TO DATE <get var="dia"/></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <get var="dia"/> </li></condition><think>
+                <set var="dia"><srai>TOMORROWDATE <get var="dia"/></srai></set>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>FREE DAYS EVENING IN WEEK FROM *</pattern>
+    <template>
+        <think>
+            <set var="dia"><star/></set>
+            <set var="i">0</set>
+        </think>
+        <condition var="i">
+            <li value="5"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS EVENING FULL <srai>TO DATE <get var="dia"/></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <get var="dia"/> </li></condition><think>
+                <set var="dia"><srai>TOMORROWDATE <get var="dia"/></srai></set>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>IS WEEK FULL FROM *</pattern>
+    <template>
+        <think>
+            <set var="count"><srai>COUNT <srai>FREE DAYS IN WEEK FROM <star/></srai></srai></set>
+        </think>
+        <condition var="count">
+            <li value="0">TRUE</li>
+            <li>FALSE</li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>FREE DAYS THIS WEEK</pattern>
+    <template>
+        <think>
+            <set var="weekday"><srai>DAY</srai></set>
+            <set var="i">0</set>
+            <set var="is_busy"></set>
+        </think>
+        <condition var="weekday">
+            <li value="sabado"></li>
+            <li value="domingo"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS DAY FULL <srai>TO DATE <srai>DATE IN <get var="i"/> DAYS</srai></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <srai>DATE IN <get var="i"/> DAYS</srai> </li></condition><think>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                <set var="weekday"><srai>WEEKDAY IN <get var="i"/> DAYS</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>FREE DAYS MORNING THIS WEEK</pattern>
+    <template>
+        <think>
+            <set var="weekday"><srai>DAY</srai></set>
+            <set var="i">0</set>
+            <set var="is_busy"></set>
+        </think>
+        <condition var="weekday">
+            <li value="sabado"></li>
+            <li value="domingo"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS MORNING FULL <srai>TO DATE <srai>DATE IN <get var="i"/> DAYS</srai></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <srai>DATE IN <get var="i"/> DAYS</srai> </li></condition><think>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                <set var="weekday"><srai>WEEKDAY IN <get var="i"/> DAYS</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>FREE DAYS EVENING THIS WEEK</pattern>
+    <template>
+        <think>
+            <set var="weekday"><srai>DAY</srai></set>
+            <set var="i">0</set>
+            <set var="is_busy"></set>
+        </think>
+        <condition var="weekday">
+            <li value="sabado"></li>
+            <li value="domingo"></li>
+            <li><think>
+                <set var="is_busy"><srai>IS EVENING FULL <srai>TO DATE <srai>DATE IN <get var="i"/> DAYS</srai></srai></srai></set>
+            </think><condition var="is_busy"><li value="FALSE"> <srai>DATE IN <get var="i"/> DAYS</srai> </li></condition><think>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                <set var="weekday"><srai>WEEKDAY IN <get var="i"/> DAYS</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>IS THIS WEEK FULL</pattern>
+    <template>
+        <think>
+            <set var="count"><srai>COUNT <srai>FREE DAYS THIS WEEK</srai></srai></set>
+        </think>
+        <condition var="count">
+            <li value="0">TRUE</li>
+            <li>FALSE</li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>NEXT WEEK AFTER *</pattern>
+    <template>
+        <think>
+            <set var="day"><star/></set>
+            <set var="i">0</set>
+        </think>
+        <condition var="i">
+            <li value="7"><get var="day"/></li>
+            <li><think>
+                <set var="day"><srai>TOMORROWDATE <get var="day"/></srai></set>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>NEXT MONDAY</pattern>
+    <template>
+        <think>
+            <set var="day"><srai>DAY</srai></set>
+        </think>
+        <condition var="day">
+            <li value="lunes"><srai>DATE A WEEK FROM lunes</srai></li>
+            <li><srai>DATE ON lunes</srai></li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>WEEK END FROM *</pattern>
+    <template>
+        <think>
+            <set var="day"><star/></set>
+            <set var="i">1</set>
+        </think>
+        <condition var="i">
+            <li value="5"><get var="day"/></li>
+            <li><think>
+                <set var="day"><srai>TOMORROWDATE <get var="day"/></srai></set>
+                <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+            </think><loop/></li>
+        </condition>
+    </template>
+</category>
+
+
+<!--
+    ========================================
+    REGLAS CONVERSACIONALES
+    ========================================
+-->
+
+<category>
+    <pattern>^ [hola buenas] ^</pattern>
+    <template>Hola, buenas, ¿qué desea?</template>
+</category>
+
+<category>
+    <pattern>^ cita ^</pattern>
+    <template>
+        <think><set name="topic">insertar cita</set></think>
+        ¿Para cuándo quiere la cita?
+    </template>
+</category>
+
+<category>
+    <pattern>*</pattern>
+    <template>
+        No te entiendo muy bien. ¿Qué desea? Aquí estamos para concertar citas ;)
+    </template>
+</category>
+
+<topic name="insertar cita">
+    <category>
+        <pattern>^ no ^ [se sé idea claro] ^</pattern>
+        <template>
+            <think>
+                <set name="this_week">TRUE</set>
+                <set name="week_begin"><srai>DATE</srai></set>
+                <set name="week_end"><srai>DATE ON viernes</srai></set>
+                <set name="next_week_begin"><srai>NEXT MONDAY</srai></set>
+                <set name="next_week_end"><srai>WEEK END FROM <get name="next_week_begin"/></srai></set>
+                <set name="topic">iterar semanas</set>
+                <set var="weekday"><srai>DAY</srai></set>
+            </think>
+            <condition var="weekday">
+                <li value="sabado"><think>
+                    <set name="this_week">FALSE</set>
+                    <set name="week_begin"><get name="next_week_begin"/></set>
+                    <set name="week_end"><get name="next_week_end"/></set>
+                    <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                    <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+                </think>¡No se preocupe! Le guiaré en la búsqueda de su cita. ¿Quiere comprobar si hay citas libres para la semana que viene?</li>
+                <li value="domingo"><think>
+                    <set name="this_week">FALSE</set>
+                    <set name="week_begin"><get name="next_week_begin"/></set>
+                    <set name="week_end"><get name="next_week_end"/></set>
+                    <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                    <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+                </think>¡No se preocupe! Le guiaré en la búsqueda de su cita. ¿Quiere comprobar si hay citas libres para la semana que viene?</li>
+                <li>¡No se preocupe! Le guiaré en la búsqueda de su cita. ¿Quiere comprobar si hay citas libres para esta semana?</li>
+            </condition>
+        </template>
+    </category>
+</topic>
+
+<topic name="iterar semanas">
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>
+            <think>
+                <set name="this_week">FALSE</set>
+                <set name="week_begin"><get name="next_week_begin"/></set>
+                <set name="week_end"><get name="next_week_end"/></set>
+                <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+            </think>No hay problema, ¿consulto la semana siguiente, del <get name="week_begin"/> al <get name="week_end"/>?
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ [si sí vale] ^</pattern>
+        <template>
+            <think>
+                <condition name="this_week">
+                    <li value="TRUE"><set var="is_full">IS THIS WEEK FULL</set></li>
+                    <li><set var="is_full"><srai>IS WEEK FULL FROM <get name="week_begin"/></srai></set></li>
+                </condition>
+            </think>
+            <condition var="is_full">
+                <li value="TRUE">No tenemos citas para la semana del <get name="week_begin"/> al <get name="week_end"/>. ¿Quiere que consulte la agenda para la semana siguiente, del <get name="next_week_begin"/> al <get name="next_week_end"/>?<think>
+                    <set name="topic">iterar semanas</set>
+                    <set name="this_week">FALSE</set>
+                    <set name="week_begin"><get name="next_week_begin"/></set>
+                    <set name="week_end"><get name="next_week_end"/></set>
+                    <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                    <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+                </think></li>
+                <li><think>
+                    <set name="topic">semana concreta</set>
+                </think>¡Tenemos citas disponibles para la semana del <get name="week_begin"/> al <get name="week_end"/>! ¿Quiere la cita por la mañana, por la tarde o le da igual?</li>
+            </condition>
+        </template>
+    </category>
+
+    <!-- Tengo libre una semana específica -->
+    <category>
+        <pattern>^ [puedo libre] ^ <set>number</set> ^ <set>month_es</set> ^ <set>number</set> ^</pattern>
+        <template>
+            <think>
+                <set name="this_week">FALSE</set>
+                <set name="week_begin"><star index="3"/> <star index="5"/> <star index="7"/></set>
+                <set name="week_end"><srai>WEEK END FROM <get name="week_begin"/></srai></set>
+                <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+            </think><srai>si</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>^ [puedo libre] ^ <set>number</set> ^ <set>month_es</set> ^</pattern>
+        <template><srai>puedo <star index="3"/> <star index="5"/> <srai>YEAR</srai></srai></template>
+    </category>
+</topic>
+
+<topic name="semana concreta">
+    <category>
+        <pattern>^ [manana maniana manyana manhana mañana] ^</pattern>
+        <template>
+            <think>
+                <set name="phase">mañana</set>
+                <set var="free_days"><condition name="this_week">
+                    <li value="TRUE"><srai>FREE DAYS MORNING THIS WEEK</srai></li>
+                    <li><srai>FREE DAYS MORNING IN WEEK FROM <get name="week_begin"/></srai></li>
+                </condition></set>
+                <set var="count"><srai>COUNT <get var="free_days"/></srai></set>
+            </think>
+            <condition var="count">
+                <li value="0"><think>
+                    <set name="topic">iterar semanas</set>
+                </think>No tenemos citas disponibles por la mañana de la semana del <get name="week_begin"/> al <get name="week_begin"/>. ¿Desea ver para la semana siguiente?</li>
+                <li><think>
+                    <set name="topic">decidir dia</set>
+                </think>La semana del <get name="week_begin"/> al <get name="week_end"/> tengo libres por la mañana los siguientes días: <get var="free_days"/>. ¿Cuándo quiere la cita?</li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ tarde ^</pattern>
+        <template>
+            <think>
+                <set name="phase">tarde</set>
+                <set var="free_days"><condition name="this_week">
+                    <li value="TRUE"><srai>FREE DAYS EVENING THIS WEEK</srai></li>
+                    <li><srai>FREE DAYS EVENING IN WEEK FROM <get name="week_begin"/></srai></li>
+                </condition></set>
+                <set var="count"><srai>COUNT <get var="free_days"/></srai></set>
+            </think>
+            <condition var="count">
+                <li value="0"><think>
+                    <set name="topic">iterar semanas</set>
+                </think>No tenemos citas disponibles por la tarde de la semana del <get name="week_begin"/> al <get name="week_begin"/>. ¿Desea ver para la semana siguiente?</li>
+                <li><think>
+                    <set name="topic">decidir dia</set>
+                </think>La semana del <get name="week_begin"/> al <get name="week_end"/> tengo libres por la tarde los siguientes días: <get var="free_days"/>. ¿Cuándo quiere la cita?</li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ igual ^</pattern>
+        <template>
+            <think>
+                <set name="phase">igual</set>
+                <set var="free_days"><condition name="this_week">
+                    <li value="TRUE"><srai>FREE DAYS THIS WEEK</srai></li>
+                    <li><srai>FREE DAYS IN WEEK FROM <get name="week_begin"/></srai></li>
+                </condition></set>
+                <set var="count"><srai>COUNT <get var="free_days"/></srai></set>
+            </think>
+            <condition var="count">
+                <li value="0"><think>
+                    <set name="topic">iterar semanas</set>
+                </think>No tenemos citas disponibles para la semana del <get name="week_begin"/> al <get name="week_begin"/>. ¿Desea ver para la semana siguiente?</li>
+                <li><think>
+                    <set name="topic">decidir dia</set>
+                </think>La semana del <get name="week_begin"/> al <get name="week_end"/> tengo libres los siguientes días: <get var="free_days"/>. ¿Cuándo quiere la cita?</li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>Por favor, especifique si quiere la cita por la mañana, por la tarde o le da igual.</template>
+    </category>
+</topic>
+
+<topic name="decidir dia">
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>
+            <think>
+                <set name="topic">iterar semanas</set>
+                <set name="this_week">FALSE</set>
+                <set name="week_begin"><get name="next_week_begin"/></set>
+                <set name="week_end"><get name="next_week_end"/></set>
+                <set name="next_week_begin"><srai>NEXT WEEK AFTER <get name="week_begin"/></srai></set>
+                <set name="next_week_end"><srai>NEXT WEEK AFTER <get name="week_end"/></srai></set>
+            </think>No hay problema, ¿quiere cita para la semana siguiente, del <get name="week_begin"/> al <get name="week_end"/>?
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ (cita+) ^ <set>weekday_es</set> ^</pattern>
+        <template>
+            <think>
+                <condition name="this_week">
+                    <li value="TRUE"><set var="day"><srai>DATE ON <star index="3"/></srai></set></li>
+                    <li>
+                        <set var="day"><get name="week_begin"/></set>
+                        <set var="i"><map name="weeknumber"><star index="3"/></map></set>
+                        <condition var="i">
+                            <li value="1"></li>
+                            <li>
+                                <set var="day"><srai>TOMORROWDATE <get var="day"/></srai></set>
+                                <set var="i"><srai>MINUS <get var="i"/> 1</srai></set>
+                                <loop/>
+                            </li>
+                        </condition>
+                    </li>
+                </condition>
+            </think>
+            <srai>cita <star index="1"/> <star index="2"/> <get var="day"/> <get name="phase"/> <star index="4"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>
+            <srai>cita <star/> <get name="phase"/></srai>
+        </template>
+    </category>
+</topic>
+
+</aiml>

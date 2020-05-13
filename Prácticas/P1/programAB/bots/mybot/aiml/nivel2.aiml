@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!--
+    Práctica 1 - NIVEL 2
+    Inteligencia Artificial (IA) - DECSAI UGR
+    =========================================
+    
+    Alumno: Miguel Ángel Fernández Gutiérrez
+    3º Doble Grado en Ingeniería Informática y Matemáticas, 2019/20
+-->
+
+<!-- - - - - - -->
+
+<!--
+    ========================================
+    UTILIDADES PROPIAS
+    ========================================
+-->
+
+<category>
+    <pattern>GET DATE <set>dia_relativo</set></pattern>
+    <template>
+        <think>
+            <set var="tempdate"><srai>DATE</srai></set>
+            <set var="complemento"><star/></set>
+            <!-- Permitir insertar mañana, manhana, maniana -->
+            <condition var="complemento">
+                <li value="mañana"><set var="complemento">manyana</set></li>
+                <li value="maniana"><set var="complemento">manyana</set></li>
+                <li value="manhana"><set var="complemento">manyana</set></li>
+                <li value="pasado mañana"><set var="complemento">pasado manyana</set></li>
+                <li value="pasado maniana"><set var="complemento">pasado manyana</set></li>
+                <li value="pasado manhana"><set var="complemento">pasado manyana</set></li>
+            </condition>
+            <condition var="complemento">
+                <li value="manyana"><set var="tempdate"><srai>TOMORROWDATE <get var="tempdate"/></srai></set></li>
+                <li value="pasado manyana"><set var="tempdate"><srai>DAYAFTERTOMORROWDATE <get var="tempdate"/></srai></set></li>
+            </condition>
+        </think>
+        <get var="tempdate"/>
+    </template>
+</category>
+
+<category>
+    <pattern>GET DATE <set>modificador</set> <set>weekday_es</set></pattern>
+    <template>
+        <think>
+            <set var="tempdate"><srai>DATE</srai></set>
+            <set var="modificador"><star index="1"/></set>
+            <condition var="modificador">
+                <li value="próximo"><set var="modificador">proximo</set></li>
+            </condition>
+            <condition var="modificador">
+                <li value="proximo"><set var="tempdate"><srai>DATE ON <star index="2"/></srai></set></li>
+                <li value="siguiente"><set var="tempdate"><srai>DATE A WEEK FROM <star index="2"/></srai></set></li>
+            </condition>
+        </think>
+        <get var="tempdate"/>
+    </template>
+</category>
+
+
+<!--
+    ========================================
+    REGLAS CONVERSACIONALES
+    ========================================
+-->
+
+<category>
+    <pattern>^ [cita citas] ^ <set>dia_relativo</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/></srai>
+    </template>
+</category>
+
+<category>
+    <pattern>^ [cita citas] ^ <set>dia_relativo</set> ^ <set>hour</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/> <star index="5"/></srai>
+    </template>
+</category>
+
+<category>
+    <pattern>^ [cita citas] ^ <set>dia_relativo</set> ^ <set>fin_complemento</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/> <star index="5"/></srai>
+    </template>
+</category>
+
+<category>
+    <pattern>^ [cita citas] ^ <set>modificador</set> ^ <set>weekday_es</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/> <star index="5"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/></srai>
+    </template>
+</category>
+
+<category>
+    <pattern>^ [cita citas] ^ <set>modificador</set> ^ <set>weekday_es</set> ^ <set>hour</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/> <star index="5"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/> <star index="7"/></srai>
+    </template>
+</category>
+
+<category>
+    <pattern>^ [cita citas] ^ <set>modificador</set> ^ <set>weekday_es</set> ^ <set>fin_complemento</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><srai>GET DATE <star index="3"/> <star index="5"/></srai></set>
+        </think>
+        <srai>cita <get name="date"/> <star index="7"/></srai>
+    </template>
+</category>
+
+</aiml>

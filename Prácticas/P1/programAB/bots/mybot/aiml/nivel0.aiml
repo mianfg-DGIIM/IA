@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!--
+    Práctica 1 - NIVEL 0
+    Inteligencia Artificial (IA) - DECSAI UGR
+    =========================================
+    
+    Alumno: Miguel Ángel Fernández Gutiérrez
+    3º Doble Grado en Ingeniería Informática y Matemáticas, 2019/20
+-->
+
+<!-- - - - - - -->
+
+<!--
+    1. Háblame un poco de ti
+    - - -
+    Cuenta/cuéntame/di/dime/manifiesta(me)/expón/explica (cosas/algo) sobre/acerca/de ti
+    Qué tipo de persona crees que eres
+    Cómo eres
+-->
+<category>
+    <pattern>^ [cuenta+ cuénta+ cont+ habla+ hábla+ di+ manif+ expon+ expón+ explica+ explíca+] ^ (cosas) (algo) ^ [sobre acerca de] ^ ti ^</pattern>
+    <template>RESPUESTA A PREGUNTA 1</template>
+</category>
+<category>
+    <pattern>^ persona ^ eres ^</pattern>
+    <template><srai>hablame un poco de ti</srai></template>
+</category>
+<category>
+    <pattern>^ [como cómo] ^ eres ^</pattern>
+    <template><srai>hablame un poco de ti</srai></template>
+</category>
+
+<!--
+    2. Cuál es tu mayor defecto
+    - - -
+    (dime/cuenta/cuéntame) cuál(es) es/son tu(s) mayor(es)/peor(es) defecto(s)/imperfeccion(es)/falla(s)/lacra(s)
+    (Quiero saber) algun(os) de tu(s) mayor(es)/peor(es) defectos/imperfecciones/...
+    (Quiero saber/qué) defectos/imperfecciones/... tiene(s)
+-->
+<category>
+    <pattern>^ ([di+ cuenta+ cuénta+]) ^ ([algun+ algún+]) ^ ([cuál+ cual+]) ^ [mayor+ peor+] ^ [defecto+ imperfeccion+ imperfección+ falla+ lacra+] ^</pattern>
+    <template>RESPUESTA A PREGUNTA 2</template>
+</category>
+
+<category>
+    <pattern>^ [defecto+ imperfeccion+ imperfección+ falla+ lacra+] ^ tiene+ ^</pattern>
+    <template><srai>cual es tu mayor defecto</srai></template>
+</category>
+
+<!--
+    3. Cuáles son tus 3 mayores virtudes
+    - - -
+    Cuéntame tus mayores virtudes/habilidades/capacidades/potencias
+    Serías tan amable de contarme algunas de tus mayores/mejores virtudes
+    Según tú, cuáles son las mayores virtudes que tienes
+    Dime tus virtudes más interesantes
+-->
+<category>
+    <pattern>^ [cuenta+ cuénta+ cont+ habla+ hábla+ di+ manif+ expon+ expón+ explica+ explíca+] ^ ([mayor+ mejor+]) ^ [virtud+ habilidad+ capacidad+ potencia+] ^ (interesante+) ^</pattern>
+    <template>RESPUESTA PREGUNTA 3</template>
+</category>
+
+<!--
+    4. Te consideras una persona creativa
+    - - -
+    Dirías que eres una persona creativa
+    Crees que eres alguien creativo
+    Dirías que eres una persona con creatividad
+-->
+<category>
+    <pattern>^ [consider+ dir+ crees] ^ creativ+ ^</pattern>
+    <template>RESPUESTA PREGUNTA 4</template>
+</category>
+
+<!--
+    5. Por qué deberíamos escogerte a ti
+    - - -
+    Por qué dirías que eres la persona que debemos escoger/elegir/seleccionar/contratar/optar
+    Deberíamos elegirte/escogerte
+-->
+<category>
+    <pattern>^ [elegir+ escoger+ seleccionar+ optar+] ^ (ti) ^</pattern>
+    <template>RESPUESTA PREGUNTA 5</template>
+</category>
+<category>
+    <pattern>^ eres ^ (persona) ^ [elegir+ escoger+ seleccionar+ optar+] ^</pattern>
+    <template><srai>por que deberiamos escogerte a ti</srai></template>
+</category>
+
+</aiml>

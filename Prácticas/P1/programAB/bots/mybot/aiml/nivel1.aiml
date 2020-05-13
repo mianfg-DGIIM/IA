@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!--
+    Práctica 1 - NIVEL 1
+    Inteligencia Artificial (IA) - DECSAI UGR
+    =========================================
+    
+    Alumno: Miguel Ángel Fernández Gutiérrez
+    3º Doble Grado en Ingeniería Informática y Matemáticas, 2019/20
+-->
+
+<!-- - - - - - -->
+
+<!--
+    ========================================
+    UTILIDADES PROPIAS
+    ========================================
+-->
+
+<!--
+    Convierte una fecha en formato texto al formato DD-MM-YY
+    - - - - -
+
+    Input: DD MM(texto) [YYYY | YY]
+    Output: DD-MM-YY
+
+    Notas:
+        - en caso de omitir el año, usa el año actual
+        - si el año no tiene 2 o 4 dígitos, usa el año actual
+
+    Ejemplos:
+        - 3 febrero -> 03-02-20
+        - 4 marzo 2021 -> 04-03-21
+        - 5 agosto 200 -> 05-08-20
+-->
+<category>
+    <pattern>TO DATE * * *</pattern>
+    <template>
+        <srai>ADD ZERO <star index="1"/></srai>-<map name="monthnumber"><star index="2"/></map>-<srai>SLICE YEAR <star index="3"/></srai>
+    </template>
+</category>
+<category>
+    <pattern>TO DATE * *</pattern>
+    <template><srai>TO DATE <star index="1"/> <star index="2"/> <srai>YEAR</srai></srai></template>
+</category>
+
+<!--
+    Función inversa a ORDINAL
+    - - - - -
+
+    Input: número, del 1 al 24
+    Output: hora de acuerdo al formato de eventos.txt
+
+    Ejemplo: 1 -> 00:00, 5 -> 04:00
+-->
+<category>
+    <pattern>INVERSE ORDINAL *</pattern>
+    <template>
+        <srai>ADD ZERO <srai>MINUS <star/> 1</srai></srai>:00
+    </template>
+</category>
+
+<!--
+    Comprueba si un día no tiene citas disponibles
+    - - - - -
+
+    Input: día en formato DD-MM-YY
+    Output:
+        - TRUE: en caso de que el día no tenga citas disponibles
+        - FALSE: en caso de que el día tenga citas disponibles
+    
+    Nota: un día no presente en eventos.txt dará siempre "TRUE"
+-->
+<category>
+    <pattern>IS DAY FULL *</pattern>
+    <template>
+        <think>
+            <set var="listoutput"><srai>LIST FREE HOURS <star/></srai></set>
+        </think>
+        <condition var="listoutput">
+            <li value="NONE">TRUE</li>
+            <li>FALSE</li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>IS MORNING FULL *</pattern>
+    <template>
+        <think>
+            <set var="listoutput"><srai>LIST FREE HOURS MORNING <star/></srai></set>
+        </think>
+        <condition var="listoutput">
+            <li value="NONE">TRUE</li>
+            <li>FALSE</li>
+        </condition>
+    </template>
+</category>
+
+<category>
+    <pattern>IS EVENING FULL *</pattern>
+    <template>
+        <think>
+            <set var="listoutput"><srai>LIST FREE HOURS EVENING <star/></srai></set>
+        </think>
+        <condition var="listoutput">
+            <li value="NONE">TRUE</li>
+            <li>FALSE</li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Regla que concatena una lista de palabras sin espacios
+
+    Nota: es una modificación de CODE de utilidades_2020
+-->
+<category>
+	<pattern> ABSCODE * </pattern>
+	<template> 
+	  <think>
+		<set var="tmp"><star/></set>
+		<set var="solucion"><first><get var="tmp"/></first></set>
+		<set var="tmp"><rest><get var="tmp"/></rest></set>
+		<condition var="tmp">
+			<li value="NIL">
+			</li>
+			<li>
+				<set var="solucion"><get var="solucion"/><first><get var="tmp"/></first></set>
+				<set var="tmp"><rest><get var="tmp"/></rest></set>
+				<loop/>
+			</li>
+		</condition>
+	  </think>
+	<get var="solucion"/>
+	</template>
+</category>
+
+<!--
+    Función auxiliar para LIST FREE HOURS
+-->
+<category>
+    <pattern>LAMBDA LIST FREE HOURS *</pattern>
+    <template>
+        <think>
+            <set var="i">8</set>
+        </think>
+        <condition var="i">
+            <li value="21"></li>
+            <li>
+                <think>
+                    <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                    <set var="hour"><srai>INVERSE ORDINAL <get var="i"/></srai></set>
+                    <set var="isbusy"><srai>IS BUSY DAY <star/> AT <get var="hour"/></srai></set>
+                </think>
+                <condition var="isbusy">
+                    <li value="FALSE">
+                        <get var="hour"/>
+                    </li>
+                </condition>
+                <loop/>
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Función auxiliar para LIST FREE HOURS MORNING
+-->
+<category>
+    <pattern>LAMBDA LIST FREE HOURS MORNING *</pattern>
+    <template>
+        <think>
+            <set var="i">8</set>
+        </think>
+        <condition var="i">
+            <li value="13"></li>
+            <li>
+                <think>
+                    <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                    <set var="hour"><srai>INVERSE ORDINAL <get var="i"/></srai></set>
+                    <set var="isbusy"><srai>IS BUSY DAY <star/> AT <get var="hour"/></srai></set>
+                </think>
+                <condition var="isbusy">
+                    <li value="FALSE">
+                        <get var="hour"/>
+                    </li>
+                </condition>
+                <loop/>
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Función auxiliar para LIST FREE HOURS
+-->
+<category>
+    <pattern>LAMBDA LIST FREE HOURS EVENING *</pattern>
+    <template>
+        <think>
+            <set var="i">13</set>
+        </think>
+        <condition var="i">
+            <li value="21"></li>
+            <li>
+                <think>
+                    <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                    <set var="hour"><srai>INVERSE ORDINAL <get var="i"/></srai></set>
+                    <set var="isbusy"><srai>IS BUSY DAY <star/> AT <get var="hour"/></srai></set>
+                </think>
+                <condition var="isbusy">
+                    <li value="FALSE">
+                        <get var="hour"/>
+                    </li>
+                </condition>
+                <loop/>
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Muestra las horas libres de un día determinado (de 8 a 20)
+    - - - - -
+
+    Input: día en formato DD-MM-YY
+    Output: lista de las horas libres de ese día    
+-->
+<category>
+    <pattern>LIST FREE HOURS *</pattern>
+    <template>
+        <think>
+            <set var="output"><srai>LAMBDA LIST FREE HOURS <star/></srai></set>
+            <set var="count"><srai>COUNT <get var="output"/></srai></set>
+            <condition var="count">
+                <li value="0"><set var="output">NONE</set></li>
+                <li><set var="output"><srai>CODE <get var="output"/></srai></set></li>
+            </condition>
+        </think>
+        <set var="output"><srai>DECODE <get var="output"/></srai></set>
+    </template>
+</category>
+
+<!--
+    Muestra las horas libres de un día determinado por la mañana (de 8 a 12)
+    - - - - -
+
+    Input: día en formato DD-MM-YY
+    Output: lista de las horas libres de ese día    
+-->
+<category>
+    <pattern>LIST FREE HOURS MORNING *</pattern>
+    <template>
+        <think>
+            <set var="output"><srai>LAMBDA LIST FREE HOURS MORNING <star/></srai></set>
+            <set var="count"><srai>COUNT <get var="output"/></srai></set>
+            <condition var="count">
+                <li value="0"><set var="output">NONE</set></li>
+                <li><set var="output"><srai>CODE <get var="output"/></srai></set></li>
+            </condition>
+        </think>
+        <set var="output"><srai>DECODE <get var="output"/></srai></set>
+    </template>
+</category>
+
+<!--
+    Muestra las horas libres de un día determinado por la tarde (de 13 a 20)
+    - - - - -
+
+    Input: día en formato DD-MM-YY
+    Output: lista de las horas libres de ese día    
+-->
+<category>
+    <pattern>LIST FREE HOURS EVENING *</pattern>
+    <template>
+        <think>
+            <set var="output"><srai>LAMBDA LIST FREE HOURS EVENING <star/></srai></set>
+            <set var="count"><srai>COUNT <get var="output"/></srai></set>
+            <condition var="count">
+                <li value="0"><set var="output">NONE</set></li>
+                <li><set var="output"><srai>CODE <get var="output"/></srai></set></li>
+            </condition>
+        </think>
+        <set var="output"><srai>DECODE <get var="output"/></srai></set>
+    </template>
+</category>
+
+<!--
+    Añade un cero para coincidir con el formato de día
+    - - - - -
+
+    Input: número de uno o dos dígitos
+    Output: número de dos dígitos
+
+    Ejemplo: 1 -> 01; 12 -> 12
+-->
+<category>
+    <pattern>ADD ZERO *</pattern>
+    <template>
+        <think>
+            <set var="number"><star/></set>
+        </think>
+        <condition var="number">
+            <li value="0">00</li>
+            <li value="1">01</li>
+            <li value="2">02</li>
+            <li value="3">03</li>
+            <li value="4">04</li>
+            <li value="5">05</li>
+            <li value="6">06</li>
+            <li value="7">07</li>
+            <li value="8">08</li>
+            <li value="9">09</li>
+            <li><star/></li>
+        </condition>
+    </template>
+</category>
+
+<!-- TODO insertar año con dos cifras -->
+<!--
+    Toma los dos últimos dígitos del año para coincidir con el formato de año
+    - - - - -
+
+    Input: un año en formato YY o YYYY
+    Output: el año en formato YY
+
+    Nota:
+        si se inserta un año con un número de dígitos diferente a 2 o 4,
+        se devuelve el año actual
+
+    Ejemplo: 2023 -> 23, 34 -> 34, 12345 -> 20 (año actual)
+-->
+<category>
+    <pattern>SLICE YEAR *</pattern>
+    <template>
+        <think>
+            <!-- Contar número de letras del año -->
+            <set var="yearcount"><srai>COUNT <srai>DELETREA <star/></srai></srai></set>
+            <condition var="yearcount">
+                <li value="4">
+                    <set var="aux1"><srai>DELETREA <star/></srai></set>
+                    <set var="aux2"><srai>REMOVE 2 FIRST ELEMENTS FROM <get var="aux1"/></srai></set>
+                    <set var="year"><srai>ABSCODE <get var="aux2"/></srai></set>
+                </li>
+                <li value="2"><set var="year"><star/></set></li>
+                <li><set var="year"><srai>SLICE YEAR <srai>YEAR</srai></srai></set></li>
+            </condition>
+        </think>
+        <get var="year"/>
+    </template>
+</category>
+
+<!--
+    Obtiene la próxima hora libre de un día
+    - - - - -
+
+    Input: [1] día en formato DD-MM-YY; [2] hora en formato HH:00
+    Output: HH:00 en caso de que haya próxima hora libre,
+        NONE en caso contrario
+-->
+<category>
+    <pattern>NEXT FREE * AFTER <set>hour</set> ^</pattern>
+    <template>
+        <think>
+            <set var="i"><srai>ORDINAL <star index="2"/></srai></set>
+            <set var="nonfound">TRUE</set>
+        </think>
+        <condition var="i">
+            <li value="21">
+                <condition var="nonfound">
+                    <li value="TRUE">NONE</li>
+                </condition>
+            </li>
+            <li>
+                <think>
+                    <set var="i"><srai>PLUS <get var="i"/> 1</srai></set>
+                    <set var="hour"><srai>INVERSE ORDINAL <get var="i"/></srai></set>
+                    <set var="isbusy"><srai>IS BUSY DAY <star/> AT <get var="hour"/></srai></set>
+                </think>
+                <condition var="isbusy">
+                    <li value="FALSE">
+                        <think>
+                            <set var="i">21</set>
+                            <set var="nonfound">FALSE</set>
+                        </think>
+                        <get var="hour"/>
+                    </li>
+                </condition>
+                <loop/>
+            </li>
+        </condition>
+    </template>
+</category>
+
+
+<!--
+    ========================================
+    REGLAS CONVERSACIONALES
+    ========================================
+-->
+
+<!--
+<category>
+    <pattern>^ [cita citas] ^</pattern>
+    <template>
+        <think><set name="topic">insertar cita</set></think>
+        Lo siento, no he entendido, ¿para cuándo dice que quiere la cita?
+    </template>
+</category>
+-->
+
+<!--
+    Pedir cita con: día, mes, año, hora exacta
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^ <set>number</set> ^ <set>hour</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><star index="3"/> <star index="5"/> <srai>SLICE YEAR <star index="7"/></srai></set>
+            <set name="dateset"><srai>TO DATE <get name="date"/></srai></set>
+            <set name="hour">07:00</set>
+            <set var="isbusy"><srai>IS BUSY DAY <get name="dateset"/> AT <star index="9"/></srai></set>
+        </think>
+        <condition var="isbusy">
+            <li value="FALSE">
+                <think>
+                    <srai>MARK OCUPADO AT <star index="9"/> ON <get name="dateset"/></srai>
+                    <set name="topic">otra cita</set>
+                </think>
+                Perfecto, queda marcada la cita de las <star index="9"/> para el <get name="date"/>. ¿Desea pedir alguna otra cita?
+            </li>
+            <li>
+                <think><set name="topic">otra cita</set></think>
+                La hora que ha introducido no se encuentra disponible, ¿desea pedir otra cita?
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Pedir cita con: día, mes, año
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^ <set>number</set> ^</pattern>
+    <template>
+        <think>
+            <set name="date"><star index="3"/> <star index="5"/> <srai>SLICE YEAR <star index="7"/></srai></set>
+            <set name="dateset"><srai>TO DATE <get name="date"/></srai></set>
+            <set name="hour">07:00</set>
+            <set var="isfull"><srai>IS DAY FULL <get name="dateset"/></srai></set>
+        </think>
+        <condition var="isfull">
+            <li value="TRUE">
+                <think><set name="topic">otro dia</set></think>
+                Lo siento, no hay citas para ese día, ¿desea ver la disponibilidad para algún otro?
+            </li>
+            <li value="FALSE">
+                <think><set name="topic">concretar</set></think>
+                ¡Tenemos citas disponibles para el <get name="date"/>! ¿Desea la cita por la mañana, por la tarde o le da igual?
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Pedir cita con: día, mes, hora exacta
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^ <set>hour</set> ^</pattern>
+    <template>
+        <srai>cita <star index="3"/> <star index="5"/> <srai>YEAR</srai> <star index="7"/></srai>
+    </template>
+</category>
+
+<!--
+    Pedir cita con: día, mes, año, mañana/tarde
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^ <set>number</set> ^ <set>fin_complemento</set> ^</pattern>
+    <template>
+        <think>
+            <set var="modifier"><star index="9"/></set>
+            <condition var="modifier">
+                <li value="mañana"><set var="modifier">MORNING</set></li>
+                <li value="maniana"><set var="modifier">MORNING</set></li>
+                <li value="manhana"><set var="modifier">MORNING</set></li>
+                <li value="manyana"><set var="modifier">MORNING</set></li>
+                <li value="tarde"><set var="modifier">EVENING</set></li>
+            </condition>
+            <set name="date"><star index="3"/> <star index="5"/> <srai>SLICE YEAR <star index="7"/></srai></set>
+            <set name="dateset"><srai>TO DATE <get name="date"/></srai></set>
+            <set name="hour">07:00</set>
+            <set var="isfull"><srai>IS <get var="modifier"/> FULL <get name="dateset"/></srai></set>
+        </think>
+        <condition var="isfull">
+            <li value="TRUE">
+                <think><set name="topic">otro dia</set></think>
+                Lo siento, no hay citas para ese intervalo de tiempo, ¿desea ver la disponibilidad para algún otro día?
+            </li>
+            <li value="FALSE">
+                <think><set name="topic">seleccionar hueco</set></think>
+                Pues tengo los siguientes huecos libres para el <get name="date"/> por la <star index="9"/>: <srai>LIST FREE HOURS <get var="modifier"/> <get name="dateset"/></srai>. ¿Quiere alguno en concreto?
+            </li>
+        </condition>
+    </template>
+</category>
+
+<!--
+    Pedir cita con: día, mes, mañana/tarde
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^ <set>fin_complemento</set> ^</pattern>
+    <template>
+        <srai>cita <star index="3"/> <star index="5"/> <srai>YEAR</srai> <star index="7"/></srai>
+    </template>
+</category>
+
+<!--
+    Pedir cita con: día, mes
+-->
+<category>
+    <pattern>^ [cita citas] ^ <set>number</set> ^ <set>month_es</set> ^</pattern>
+    <template>
+        <srai>cita <star index="3"/> <star index="5"/> <srai>YEAR</srai></srai>
+    </template>
+</category>
+
+<topic name="concretar">
+    <category>
+        <pattern>^ <set>fin_complemento</set> ^</pattern>
+        <template>
+            <srai>cita <get name="date"/> <star index="2"/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ igual ^</pattern>
+        <template>
+            <think>
+                <set var="nexthour"><srai>NEXT FREE <get name="dateset"/> AFTER <get name="hour"/></srai></set>
+                <set name="hour"><get var="nexthour"/></set>
+            </think>
+            <condition var="nexthour">
+                <li value="NONE">
+                    <think><set name="topic">otro dia</set></think>
+                    No hay más huecos libres, ¿desea una cita para otro día?
+                </li>
+                <li>
+                    <think><set name="topic">iterar huecos</set></think>
+                    El próximo hueco libre es a las <get name="hour"/>, ¿lo desea?
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>Por favor, especifique si desea la cita por la mañana, por la tarde o le da igual. Si no quiere una cita para el <get name="date"/>, díganoslo.</template>
+    </category>
+
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>
+            <think><set name="topic">otro dia</set></think>
+            No hay problema, ¿desea una cita para otro día?</template>
+    </category>
+</topic>
+
+<topic name="seleccionar hueco">
+    <category>
+        <pattern>^ <set>hour</set> ^</pattern>
+        <template>
+            <think>
+                <set var="isbusy"><srai>IS BUSY DAY <get name="dateset"/> AT <star index="2"/></srai></set>
+            </think>
+            <condition var="isbusy">
+                <li value="FALSE">
+                    <think>
+                        <srai>MARK OCUPADO AT <star index="2"/> ON <get name="dateset"/></srai>
+                        <set name="topic">otra cita</set>
+                    </think>
+                    Perfecto, queda marcada la cita de las <star index="2"/> para el <get name="date"/>. ¿Quiere alguna otra cita más?
+                </li>
+                <li>
+                    <set name="topic">seleccionar hueco</set>
+                    La hora que ha introducido no se encuentra disponible, ¿quiere alguna otra hora en concreto?
+                </li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>
+            <think><set name="topic">otra cita</set></think>
+            Sin problema, ¿desea pedir alguna otra cita?
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>Por favor, especifique qué hueco quiere para el día <get name="date"/>, o díganos si no desea concertar una cita para ese día.</template>
+    </category>
+</topic>
+
+<topic name="iterar huecos">
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>
+            <think>
+                <set var="nexthour"><srai>NEXT FREE <get name="dateset"/> AFTER <get name="hour"/></srai></set>
+                <set name="hour"><get var="nexthour"/></set>
+            </think>
+            <condition var="nexthour">
+                <li value="NONE">
+                    <think><set name="topic">otro dia</set></think>
+                    No hay mas huecos libres, ¿desea otro día?
+                </li>
+                <li>El siguiente hueco libre es a las <get name="hour"/>, ¿lo desea?</li>
+            </condition>
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ [si sí] ^</pattern>
+        <template>
+            <think>
+                <srai>MARK OCUPADO AT <get name="hour"/> ON <get name="dateset"/></srai>
+                <set name="topic">otra cita</set>
+            </think>
+            Perfecto, queda marcada la cita de las <get name="hour"/> para el <get name="date"/>. ¿Quiere alguna otra cita más?
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>
+            Perdona, no te he entendido, ¿desea o no el hueco de las <get name="hour"/>?
+        </template>
+    </category>
+</topic>
+
+<topic name="otra cita">
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>¡Perfecto! ¡Nos vemos pronto! :)</template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>No te he entendido. ¿Quieres pedir alguna otra cita?</template>
+    </category>
+
+    <category>
+        <pattern>^ [si sí] ^</pattern>
+        <template>
+            <think>
+                <set name="topic">insertar cita</set>
+            </think>
+            ¿Para cuándo quiere la cita?
+        </template>
+    </category>
+</topic>
+
+<topic name="otro dia">
+    <category>
+        <pattern>^ [si sí] ^</pattern>
+        <template>
+            <think><set name="topic">insertar cita</set></think>
+            Genial, especifique cuándo quiere otra cita.
+        </template>
+    </category>
+
+    <category>
+        <pattern>^ no ^</pattern>
+        <template>¡Perfecto! ¡Nos vemos pronto! :)</template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>No te he entendido. ¿Quieres otra cita?</template>
+    </category>
+</topic>
+
+<topic name="insertar cita"> <!--QUIERE LA CITA-->
+    <category>
+        <pattern>*</pattern>
+        <template>
+            <think><set name="topic">unknown</set></think>
+            <srai>cita <star/></srai>
+        </template>
+    </category>
+</topic>
+
+</aiml>
