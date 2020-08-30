@@ -1,5 +1,7 @@
 [⬅ Más asignaturas del DGIIM](https://github.com/mianfg/DGIIM)
 
+![Repo image](https://repository-images.githubusercontent.com/263687450/ef84ee00-eae8-11ea-8973-54ae05dd7a75)
+
 # `IA` Inteligencia Artificial
 
 | Nombre                | Ingeniería de Servidores                                     |
